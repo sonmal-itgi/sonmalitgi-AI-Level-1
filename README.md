@@ -64,3 +64,27 @@ MediaPipe Hands
 LSTM
     ↓
 1 ~ 12 classification
+
+### Baseline v3
+
+- Training: CROWD01 ~ CROWD17
+- Training signers: 17
+- Training videos: 204
+- Validation: CROWD18, CROWD19
+- Validation videos: 24
+- Validation loss: **0.6629**
+- Validation accuracy: **79.17% (19/24)**
+
+Training signer 수를 17명까지 확장한 결과, 동일한 전처리 및 LSTM 구조에서 validation accuracy가 79.17%까지 증가했습니다.
+
+### Baseline Comparison
+
+| Version | Training Signers | Training Videos | Validation Accuracy |
+|---|---:|---:|---:|
+| v1 | 2 | 24 | 8.33% |
+| v2 | 5 | 60 | 37.50% |
+| v3 | 17 | 204 | 79.17% |
+
+현재 결과는 Training signer 다양성이 새로운 signer에 대한 일반화 성능에 큰 영향을 준다는 것을 보여줍니다.
+
+다음 단계에서는 baseline v3를 기준으로 landmark 정규화, 짧은 annotation 구간 처리, presence mask 처리 방식 등의 전처리 개선을 실험할 예정입니다.
