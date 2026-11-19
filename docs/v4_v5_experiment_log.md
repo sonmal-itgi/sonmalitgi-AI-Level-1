@@ -116,3 +116,109 @@ Recommended initial evaluation set:
 - 36 videos per participant
 
 The current v5 model should be preserved without modification until the new external set is evaluated.
+
+## 8. v6 Stacked LSTM
+
+A stacked LSTM model was evaluated while keeping the v5 sliding-window preprocessing and dataset unchanged.
+
+Architecture:
+
+- LSTM(64, return_sequences=True, L2=0.005)
+- Batch Normalization
+- Dropout(0.3)
+- LSTM(32, return_sequences=False, L2=0.005)
+- Batch Normalization
+- Dropout(0.3)
+- Dense(12, Softmax, L2=0.005)
+
+Validation results:
+
+| Model | Full Sequence | Sliding-Window Aggregation |
+|---|---:|---:|
+| v5 | 75.00% (18/24) | 91.67% (22/24) |
+| v6 | 83.33% (20/24) | 91.67% (22/24) |
+
+The stacked LSTM improved full-sequence validation performance while maintaining the same sliding-window aggregated accuracy.
+
+## 9. External Test Set v1
+
+A new external webcam test set was collected before further model modification.
+
+Dataset:
+
+- 12 classes (1–12)
+- 3 repetitions per class
+- Total: 36 videos
+- File naming: test_0101, test_0102, ..., test_1203
+- Repetitions 01/02: MP4
+- Repetition 03: MOV
+
+All 36 videos were successfully processed with MediaPipe and converted to landmark sequences.
+
+### External Test Results
+
+| Model | Accuracy |
+|---|---:|
+| v5 | 38.89% (14/36) |
+| v6 | 44.44% (16/36) |
+
+v6 showed a 5.55 percentage-point improvement over v5 on the new external set.
+
+### v6 Per-Class Accuracy
+
+| Class | Accuracy |
+|---|---:|
+| 1 | 0/3 |
+| 2 | 2/3 |
+| 3 | 2/3 |
+| 4 | 1/3 |
+| 5 | 3/3 |
+| 6 | 2/3 |
+| 7 | 0/3 |
+| 8 | 2/3 |
+| 9 | 0/3 |
+| 10 | 2/3 |
+| 11 | 1/3 |
+| 12 | 1/3 |
+
+A large performance gap was observed between the AI Hub validation set and newly recorded external videos.
+
+For the v6 model:
+
+- MP4 repetitions 01/02: 14/24 = 58.33%
+- MOV repetition 03: 2/12 = 16.67%
+
+This does not prove that the MOV format itself is the cause, because repetition number, recording condition, device, orientation, and file format are confounded.
+
+Classes 1, 7, and 9 failed on all three external repetitions, indicating that the current limitation is not explained only by the MOV samples.
+
+## 10. Current Status
+
+Current primary candidate:
+
+- v6 stacked LSTM
+- Sliding window: 48 frames
+- Stride: 8 frames
+- Resampled sequence length: 64
+- Mean softmax probability aggregation
+
+Development validation:
+
+- 91.67% (22/24)
+
+New external test:
+
+- 44.44% (16/36)
+
+The next step is to analyze the domain gap between AI Hub videos and externally recorded videos before further model tuning.
+
+In particular:
+
+- video resolution
+- frame rate
+- orientation
+- MediaPipe hand detection rate
+- recording device / camera condition
+- class-specific confusion
+
+should be investigated.
