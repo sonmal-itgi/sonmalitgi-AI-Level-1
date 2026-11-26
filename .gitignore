@@ -69,3 +69,10 @@ numeric_labels.csv
 # TensorFlow
 logs/
 checkpoints/
+
+# ==========================================
+# Deployment model artifacts
+# ==========================================
+
+!/models/v9_medium_mirror/lstm_1to12_v9_medium_mirror.keras
+!/models/v9_medium_mirror/normalization.npz
